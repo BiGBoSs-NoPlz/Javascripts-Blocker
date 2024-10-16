@@ -1,0 +1,32 @@
+// ==UserScript==
+// @name         Block Specific JS File
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  javascripts-blocker
+// @author       Qusay
+// @match        *://*/*
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    const blockedFile = "script.js";
+
+    // مراقبة تحميل الموارد
+    var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes) {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.tagName === 'SCRIPT' && node.src.includes(blockedFile)) {
+                        node.remove(); // إزالة السكربت
+                        console.log(`Blocked: ${node.src}`);
+                    }
+                });
+            }
+        });
+    });
+
+    observer.observe(document, { childList: true, subtree: true });
+
+})();
